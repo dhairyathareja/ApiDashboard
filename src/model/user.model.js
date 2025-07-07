@@ -44,7 +44,15 @@ const userSchema = new Schema({
             requestsPerMinute: {type:Number,default:0},
             rpmLimit: {type:Number,default:100}
         }
-    }
+    },
+    hitHistory:[
+        {
+            endpoint:String,
+            method:String,
+            apiKey:String,
+            date:{type:Date,default:Date.now()}
+        }
+    ]
 })
 
 userSchema.pre('save', async function (next) {
@@ -73,6 +81,11 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.isPasswordCorrect = async function (enteredPassword) {
     const user = this;    
     return await bcrypt.compare(enteredPassword,user.password);
+} 
+
+userSchema.methods.isKeyCorrect = async function (enteredKey,dbKey) {
+    const user = this;    
+    return await bcrypt.compare(enteredKey,dbKey);
 } 
 
 userSchema.methods.generateAccessToken= async function(){

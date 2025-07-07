@@ -11,32 +11,26 @@ dotenv.config();
 
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 4400;
 
-// Middlewares
-// app.use(cors({
-//   origin: process.env.ORIGIN || 'http://localhost:3000',
-//   credentials: true
-// }));
+app.use(cors({
+  origin:'http://localhost:3000',
+  credentials:true
+}))
 
 app.use(express.json());
 app.use(bodyParser.json({ limit: '5kb' }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Get __dirname inside ES module
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// ✅ Correct path to public directory from /src
-const publicPath = path.join(__dirname, '../public');
-console.log(publicPath);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 
 
-// ✅ Serve static files from '../public'
-app.use(express.static(publicPath));
+// const publicPath = path.join(__dirname, '../public');
+// app.use(express.static(publicPath));
 
-// Your routes
+// Routes
 import authRouter from './routes/auth.router.js';
 import userRouter from './routes/user.router.js';
 import { verifyJWT } from './middleware/verifyJWT.js';
@@ -44,16 +38,11 @@ import { verifyJWT } from './middleware/verifyJWT.js';
 app.use('/auth', authRouter);
 app.use('/user', verifyJWT, userRouter);
 
-// ✅ React fallback for SPA routing
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(publicPath, 'index.html'));
-// });
 
-// Connect DB and start server
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running at http://65.0.109.216:${PORT}`);
+    app.listen(PORT,()=>{
+      console.log("Started")
     });
   })
   .catch(err => console.log("❌ MongoDB Connection Error:", err));
