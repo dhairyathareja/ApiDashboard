@@ -13,22 +13,22 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4400;
 
-app.use(cors({
-  origin:'http://localhost:3000',
-  credentials:true
-}))
+// app.use(cors({
+//   origin:'http://localhost:3000',
+//   credentials:true
+// }))
 
 app.use(express.json());
 app.use(bodyParser.json({ limit: '5kb' }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 
-// const publicPath = path.join(__dirname, '../public');
-// app.use(express.static(publicPath));
+const publicPath = path.join(__dirname, '../public');
+app.use(express.static(publicPath));
 
 // Routes
 import authRouter from './routes/auth.router.js';
