@@ -9,24 +9,29 @@ import { fileURLToPath } from 'url';
 
 dotenv.config();
 
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+// Middlewares
+// app.use(cors({
+//   origin: process.env.ORIGIN || 'http://localhost:3000',
+//   credentials: true
+// }));
+
+app.use(express.json());
+app.use(bodyParser.json({ limit: '5kb' }));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+
 // Get __dirname inside ES module
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // ✅ Correct path to public directory from /src
 const publicPath = path.join(__dirname, '../public');
+console.log(publicPath);
 
-const app = express();
-const PORT = process.env.PORT || 5000;
-
-// Middlewares
-app.use(cors({
-  origin: process.env.ORIGIN || 'http://localhost:3000',
-  credentials: true
-}));
-app.use(bodyParser.json({ limit: '5kb' }));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
 
 // ✅ Serve static files from '../public'
 app.use(express.static(publicPath));
@@ -40,15 +45,15 @@ app.use('/auth', authRouter);
 app.use('/user', verifyJWT, userRouter);
 
 // ✅ React fallback for SPA routing
-app.get('*', (req, res) => {
-  res.sendFile(path.join(publicPath, 'index.html'));
-});
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(publicPath, 'index.html'));
+// });
 
 // Connect DB and start server
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     app.listen(PORT, () => {
-      console.log(`🚀 Server running at http://localhost:${PORT}`);
+      console.log(`🚀 Server running at http://65.0.109.216:${PORT}`);
     });
   })
   .catch(err => console.log("❌ MongoDB Connection Error:", err));
